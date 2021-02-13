@@ -61,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ..info = "Info o průvodci");
                   await getMy<StoryService>().startWizard(context, someItemToEdit);
                 }),
+            Expanded(child: ItemsWidget()),
           ],
         ),
       ),
@@ -77,6 +78,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return FlatButton(
       child: Text(langCode),
       onPressed: langCode == curLang ? null : () => getMy<ConfigService>().setLocale(langCode),
+    );
+  }
+}
+
+class ItemsWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    List<String> items = context.watchState<MyDummyAppState>().items;
+    List<Widget> li = List<Widget>();
+    if (items != null) {
+      for (int i = 0; i < items.length; i++) {
+        var item = items[i];
+        li.add(
+          Dismissible(
+            key: ObjectKey(item),
+            child: ListTile(title: Text("${item}")),
+            onDismissed: (direction) {
+              getMy<MyDummyAppService>().deleteItem(i);
+            },
+          ),
+        );
+      }
+    }
+    return ListView(
+      children: li,
     );
   }
 }

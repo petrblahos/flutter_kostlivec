@@ -1,6 +1,7 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
 import 'package:flutter/material.dart' show Locale;
+import 'package:flutter_kostlivec/src/i69n/locales.dart' as locales;
+import 'package:hive/hive.dart';
+
 import 'package:flutter_kostlivec/src/build_flavor.dart';
 
 part 'config_state.g.dart';
@@ -8,13 +9,24 @@ part 'config_state.g.dart';
 ///
 /// Nastaveni aplikace, aktualni locale, mozna i dalsi preference.
 ///
-abstract class ConfigState implements Built<ConfigState, ConfigStateBuilder> {
-  static Serializer<ConfigState> get serializer => _$configStateSerializer;
+@HiveType(typeId: 3)
+class ConfigState {
+  @HiveField(0)
+  BuildFlavor _mode;
 
-  BuildFlavor get mode;
+  @HiveField(1)
+  String _language;
 
-  Locale get locale;
+  BuildFlavor get mode => _mode;
+  Locale get locale => locales.findNearestLocale(Locale(_language));
 
-  ConfigState._();
-  factory ConfigState([void Function(ConfigStateBuilder) updates]) = _$ConfigState;
+  ConfigState() {
+    _mode = BuildFlavor.PROD;
+    _language = locales.detectLocale().languageCode;
+  }
+
+  ConfigState.build(BuildFlavor m, String l) {
+    _mode = m;
+    _language = l;
+  }
 }

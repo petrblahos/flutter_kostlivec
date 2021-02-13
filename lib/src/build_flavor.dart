@@ -1,3 +1,7 @@
+import 'package:hive/hive.dart';
+
+part 'build_flavor.g.dart';
+
 ///
 /// Environment - production or test?
 ///
@@ -5,4 +9,10 @@
 /// main_prod.dart
 /// main_test.dart
 ///
-enum BuildFlavor { PROD, TEST }
+@HiveType(typeId: 2)
+enum BuildFlavor {
+  @HiveField(0)
+  PROD,
+  @HiveField(1)
+  TEST,
+}

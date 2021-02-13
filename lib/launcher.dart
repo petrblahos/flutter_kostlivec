@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_kostlivec/src/app.dart';
 import 'package:flutter_kostlivec/src/build_flavor.dart';
 import 'package:flutter_kostlivec/src/i69n/locales.dart';
 import 'package:flutter_kostlivec/src/i69n/messages.i69n.dart';
 import 'package:flutter_kostlivec/src/service/config_service.dart';
 import 'package:flutter_kostlivec/src/service/my_dummy_app_service.dart';
-import 'package:flutter_kostlivec/src/service/persistence_service.dart';
 import 'package:flutter_kostlivec/src/service/story_service.dart';
 import 'package:flutter_kostlivec/src/state/config_state.dart';
 import 'package:flutter_kostlivec/src/state/my_dummy_app_state.dart';
@@ -23,6 +24,10 @@ Logger _log = Logger("Launcher");
 ///
 Future launch(BuildFlavor mode) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(MyDummyAppStateAdapter());
+  Hive.registerAdapter(ConfigStateAdapter());
+  Hive.registerAdapter(BuildFlavorAdapter());
 
   Widget composedApp = await _composeApp(mode, App());
 
@@ -47,8 +52,8 @@ Future<Widget> _composeApp(BuildFlavor mode, Widget appWidget) async {
   _log.info("Configuring initial state ...");
   await _configureInitialState(mode);
 
-  _log.info("Loading previous persistent state ...");
-  await getMy<PersistenceService>().loadPreviousState();
+  _log.info("Setting locale ...");
+  getMy<ConfigService>().updateLocale();
 
   _log.info("Preparing providers ...");
   return MultiProvider(
@@ -61,14 +66,20 @@ Future<Widget> _composeApp(BuildFlavor mode, Widget appWidget) async {
   );
 }
 
+void configUpdated() {
+  _log.info("configUpdated listener");
+  getMy<ConfigService>().updateLocale();
+}
+
 Future _configureInitialState(BuildFlavor mode) async {
   _log.info("... ConfigState");
   var defaultConfig = getMy<ConfigService>().prepareDefaultState(mode);
-  GetIt.instance.registerSingleton(StateHolder<ConfigState>(defaultConfig));
+  GetIt.instance.registerSingleton(StateHolder<ConfigState>(defaultConfig, boxName: "ConfigState"));
+  getMyStateHolder<ConfigState>().addListener(configUpdated);
 
   _log.info("... MyDummyAppState");
   var defaultDummyState = getMy<MyDummyAppService>().prepareDefaultState(mode);
-  GetIt.instance.registerSingleton(StateHolder<MyDummyAppState>(defaultDummyState));
+  GetIt.instance.registerSingleton(StateHolder<MyDummyAppState>(defaultDummyState, boxName: "MyDummyAppState"));
 
   _log.info("... Messages");
   GetIt.instance.registerSingleton(StateHolder<Messages>(getMessagesByLocale(defaultConfig.locale)));
@@ -77,6 +88,5 @@ Future _configureInitialState(BuildFlavor mode) async {
 Future _configureServices() async {
   GetIt.instance.registerSingleton(ConfigService());
   GetIt.instance.registerSingleton(MyDummyAppService());
-  GetIt.instance.registerSingleton(PersistenceService());
   GetIt.instance.registerSingleton(StoryService());
 }

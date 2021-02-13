@@ -33,7 +33,7 @@ extension ReadContextState on BuildContext {
 /// Umozni ziskat pozadovany *State objekt, a build context BUDE notifikovan o zmene, lze vesmes pouzit pouze uvnitr build metod, nikoliv napr. v event handlerech apod.
 ///
 extension WatchContextState on BuildContext {
-  T watchState<T extends Built<T, Builder<T, dynamic>>>() {
+  T watchState<T>() {
     return this.watch<StateHolder<T>>().state;
   }
 }

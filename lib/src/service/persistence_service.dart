@@ -39,8 +39,8 @@ class PersistenceService extends WidgetsBindingObserver {
   /// Uloz aktualni stav aplikace (viz _buildPersistentState)
   ///
   Future saveAppState() async {
-    PersistentState s = _buildPersistentState();
-    await _savePersistentState(s);
+    //PersistentState s = _buildPersistentState();
+    //await _savePersistentState(s);
   }
 
   ///

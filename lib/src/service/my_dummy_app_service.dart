@@ -14,15 +14,21 @@ class MyDummyAppService {
   StateHolder<MyDummyAppState> get holder => getMy<StateHolder<MyDummyAppState>>();
 
   MyDummyAppState prepareDefaultState(BuildFlavor mode) {
-    return MyDummyAppState((MyDummyAppStateBuilder b) => b..counter = 1);
+    return MyDummyAppState();
   }
 
   ///
   /// Demo metoda - zvedni pocitadlo.
   ///
   void incrementCounter() {
-    holder.state = holder.state.rebuild((MyDummyAppStateBuilder b) {
-      b.counter = b.counter + 1;
-    });
+    List<String> l = List.from(holder.state.items);
+    l.add("Item: ${DateTime.now()}");
+    holder.state = MyDummyAppState.build(holder.state.counter + 1, l);
+  }
+
+  void deleteItem(int index) {
+    List<String> l = List.from(holder.state.items);
+    l.removeAt(index);
+    holder.state = MyDummyAppState.build(holder.state.counter, l);
   }
 }

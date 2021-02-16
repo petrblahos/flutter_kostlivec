@@ -1,6 +1,5 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:flutter/material.dart' show Locale;
 import 'package:flutter_kostlivec/src/build_flavor.dart';
 
 part 'config_state.g.dart';
@@ -13,7 +12,7 @@ abstract class ConfigState implements Built<ConfigState, ConfigStateBuilder> {
 
   BuildFlavor get mode;
 
-  Locale get locale;
+  String get language;
 
   ConfigState._();
   factory ConfigState([void Function(ConfigStateBuilder) updates]) = _$ConfigState;

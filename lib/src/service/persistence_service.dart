@@ -67,8 +67,7 @@ class PersistenceService extends WidgetsBindingObserver {
   }
 
   PersistentState _buildPersistentState() {
-    Locale l = config.state.locale;
-    PersistentState p = PersistentState((b) => b..language = l.languageCode);
+    PersistentState p = PersistentState((b) => b..language = config.state.language);
     return p;
   }
 

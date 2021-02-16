@@ -21,9 +21,9 @@ class _$ConfigStateSerializer implements StructuredSerializer<ConfigState> {
       'mode',
       serializers.serialize(object.mode,
           specifiedType: const FullType(BuildFlavor)),
-      'locale',
-      serializers.serialize(object.locale,
-          specifiedType: const FullType(Locale)),
+      'language',
+      serializers.serialize(object.language,
+          specifiedType: const FullType(String)),
     ];
 
     return result;
@@ -44,9 +44,9 @@ class _$ConfigStateSerializer implements StructuredSerializer<ConfigState> {
           result.mode = serializers.deserialize(value,
               specifiedType: const FullType(BuildFlavor)) as BuildFlavor;
           break;
-        case 'locale':
-          result.locale = serializers.deserialize(value,
-              specifiedType: const FullType(Locale)) as Locale;
+        case 'language':
+          result.language = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -59,17 +59,17 @@ class _$ConfigState extends ConfigState {
   @override
   final BuildFlavor mode;
   @override
-  final Locale locale;
+  final String language;
 
   factory _$ConfigState([void Function(ConfigStateBuilder) updates]) =>
       (new ConfigStateBuilder()..update(updates)).build();
 
-  _$ConfigState._({this.mode, this.locale}) : super._() {
+  _$ConfigState._({this.mode, this.language}) : super._() {
     if (mode == null) {
       throw new BuiltValueNullFieldError('ConfigState', 'mode');
     }
-    if (locale == null) {
-      throw new BuiltValueNullFieldError('ConfigState', 'locale');
+    if (language == null) {
+      throw new BuiltValueNullFieldError('ConfigState', 'language');
     }
   }
 
@@ -83,19 +83,21 @@ class _$ConfigState extends ConfigState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ConfigState && mode == other.mode && locale == other.locale;
+    return other is ConfigState &&
+        mode == other.mode &&
+        language == other.language;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, mode.hashCode), locale.hashCode));
+    return $jf($jc($jc(0, mode.hashCode), language.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ConfigState')
           ..add('mode', mode)
-          ..add('locale', locale))
+          ..add('language', language))
         .toString();
   }
 }
@@ -107,16 +109,16 @@ class ConfigStateBuilder implements Builder<ConfigState, ConfigStateBuilder> {
   BuildFlavor get mode => _$this._mode;
   set mode(BuildFlavor mode) => _$this._mode = mode;
 
-  Locale _locale;
-  Locale get locale => _$this._locale;
-  set locale(Locale locale) => _$this._locale = locale;
+  String _language;
+  String get language => _$this._language;
+  set language(String language) => _$this._language = language;
 
   ConfigStateBuilder();
 
   ConfigStateBuilder get _$this {
     if (_$v != null) {
       _mode = _$v.mode;
-      _locale = _$v.locale;
+      _language = _$v.language;
       _$v = null;
     }
     return this;
@@ -137,7 +139,7 @@ class ConfigStateBuilder implements Builder<ConfigState, ConfigStateBuilder> {
 
   @override
   _$ConfigState build() {
-    final _$result = _$v ?? new _$ConfigState._(mode: mode, locale: locale);
+    final _$result = _$v ?? new _$ConfigState._(mode: mode, language: language);
     replace(_$result);
     return _$result;
   }
